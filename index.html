@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Jam & Kalender Bucin</title>
+
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+}
+
+.container {
+    background: rgba(0, 0, 0, 0.793);
+    padding: 30px 40px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+}
+
+/* JAM DIGITAL */
+#time {
+    font-size: 48px;
+    font-weight: bold;
+}
+#date {
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+/* NAMA & JAM BUCIN */
+.nama {
+    font-size: 16px;
+    font-style: italic;
+}
+.jam-bucin {
+    font-size: 16px;
+    font-style: italic;
+    margin-bottom: 20px;
+}
+
+/* JAM ANALOG */
+.clock {
+    width: 220px;
+    height: 220px;
+    border: 8px solid #fff;
+    border-radius: 50%;
+    position: relative;
+    margin: auto;
+    background: rgba(7, 181, 216, 0.793);
+}
+
+/* ANGKA JAM */
+.number {
+    position: absolute;
+    font-size: 16px;
+    font-weight: bold;
+    transform: translate(-50%, -50%);
+    user-select: none;
+}
+
+/* JARUM */
+.hand {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform-origin: 0% 50%;
+    background: #fff;
+    border-radius: 4px;
+}
+.hour { width: 30%; height: 4px; }
+.minute { width: 42%; height: 3px; }
+.second { width: 45%; height: 2px; background: #000000; }
+
+.center {
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <div id="time">00:00:00</div>
+    <div id="date">Loading...</div>
+
+    <div class="nama" id="nama">ARNOF💕REGINA</div>
+    <div class="jam-bucin" id="jamBucin"> 00:00:00</div>
+
+    <div class="clock" id="clock">
+        <div class="hand hour" id="hour"></div>
+        <div class="hand minute" id="minute"></div>
+        <div class="hand second" id="second"></div>
+        <div class="center"></div>
+    </div>
+</div>
+
+<script>
+// ===== ANGKA JAM ANALOG =====
+const clock = document.getElementById("clock");
+const size = clock.clientWidth;
+const center = size / 2;
+const radius = center - 28;
+
+for (let i = 1; i <= 12; i++) {
+    const num = document.createElement("div");
+    num.className = "number";
+    num.innerText = i;
+
+    const angle = (i - 3) * (Math.PI / 6);
+    num.style.left = center + radius * Math.cos(angle) + "px";
+    num.style.top  = center + radius * Math.sin(angle) + "px";
+
+    clock.appendChild(num);
+}
+
+// ===== UPDATE JAM =====
+function updateClock() {
+    const now = new Date();
+
+    const hh = String(now.getHours()).padStart(2,'0');
+    const mm = String(now.getMinutes()).padStart(2,'0');
+    const ss = String(now.getSeconds()).padStart(2,'0');
+
+    document.getElementById("time").textContent = `${hh}:${mm}:${ss}`;
+
+    const hari = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+    const bulan = ["Januari","Februari","Maret","April","Mei","Juni",
+                   "Juli","Agustus","September","Oktober","November","Desember"];
+
+    document.getElementById("date").textContent =
+        `${hari[now.getDay()]}, ${now.getDate()} ${bulan[now.getMonth()]} ${now.getFullYear()}`;
+
+    // JAM BUCIN TERPISAH
+    document.getElementById("jamBucin").textContent = `${hh}:${mm}:${ss}`;
+
+    // JAM ANALOG
+    document.getElementById("second").style.transform = `rotate(${ss * 6}deg)`;
+    document.getElementById("minute").style.transform = `rotate(${mm * 6 + ss * 0.1}deg)`;
+    document.getElementById("hour").style.transform =
+        `rotate(${(now.getHours() % 12) * 30 + mm * 0.5}deg)`;
+}
+
+setInterval(updateClock, 1000);
+updateClock();
+</script>
+
+</body>
+</html>
